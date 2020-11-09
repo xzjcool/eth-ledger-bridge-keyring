@@ -162,7 +162,7 @@ class LedgerBridgeKeyring extends EventEmitter {
   signTransaction (address, tx) {
     return new Promise((resolve, reject) => {
       this.unlock().then((_) => {
-        tx.v = ethUtil.bufferToHex((tx.getChainId() * 2) + 35)
+        tx.v = ethUtil.bufferToHex(tx.getChainId())
         tx.r = '0x00'
         tx.s = '0x00'
 
@@ -198,14 +198,7 @@ class LedgerBridgeKeyring extends EventEmitter {
               tx.r = Buffer.from(payload.r, 'hex')
               tx.s = Buffer.from(payload.s, 'hex')
 
-              const valid = tx.verifySignature()
-              if (valid) {
-                resolve(tx)
-              } else {
-                reject(
-                  new Error('Ledger: The transaction signature is not valid'),
-                )
-              }
+              resolve(tx)
             } else {
               reject(
                 new Error(
